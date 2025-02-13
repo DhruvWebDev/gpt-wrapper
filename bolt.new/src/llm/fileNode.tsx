@@ -10,13 +10,14 @@ export function FileNode({ file }) {
         setSelectedFile(file);
     };
 
+    const {name} = file;
+
     return (
         <div 
             onClick={handleFileClick}  // Corrected onClick syntax
-            style={{ cursor: "pointer" }}  // Optional: Add pointer cursor for better UX
+            style={{ cursor: "pointer" }}  // Optional: Add pointer cursor for better const firsi        >
         >
-            {/* Add content to the div, e.g., file name or icon */}
-            {file.name}
+            {name}
         </div>
     );
 }

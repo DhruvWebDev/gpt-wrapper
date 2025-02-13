@@ -1,9 +1,9 @@
-export const mountStructure = (projects) => {
+export const mountStructure = ({projects}) => {
     const directoryArray = projects.directories;
 
     //Directory creation
-    for(d in directoryArray){
-        await webcontainerInstance.fs.mkdir('d', { recursive: true });
+    for(dir in directoryArray){
+        await webcontainerInstance.fs.mkdir(dir, { recursive: true });
     }
 
     //File mounting 
@@ -11,7 +11,7 @@ export const mountStructure = (projects) => {
 
     //File Creation
     for(file in fileArray){
-        const {code, order, path, name} = file;
+        const {code, order, path, name, lang} = file;
         await webcontainerInstance.fs.writeFile(path, code);
     }
 
