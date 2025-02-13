@@ -54,7 +54,7 @@ export function StepList({ project }: ProjectProps) {
               <div key={index} className="flex items-center space-x-3 text-white">
                 <Dot  className="w-4 h-4 text-emerald-500 shrink-0" />
                 <span className="font-medium">Create</span>
-                <code className="px-2 py-1 rounded bg-zinc-800/50 text-sm">{step.code}</code>
+                <code className="px-2 py-1 rounded bg-zinc-800/50 text-sm">{step.path}</code>
               </div>
             ))}
           </div>

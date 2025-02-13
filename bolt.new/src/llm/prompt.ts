@@ -302,3 +302,85 @@ export const shadcnComponents = {
     transition: "npx shadcn-ui@latest add transition",
   }
 };
+
+
+const fileTreeData = [
+  {
+    name: "app",
+    type: "folder" as const,
+    children: [
+      {
+        name: "api",
+        type: "folder" as const,
+        children: [
+          {
+            name: "code",
+            type: "folder" as const,
+            children: [
+              {
+                name: "route.ts",
+                type: "file" as const,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: "globals.css",
+        type: "file" as const,
+      },
+      {
+        name: "layout.tsx",
+        type: "file" as const,
+      },
+      {
+        name: "page.tsx",
+        type: "file" as const,
+      },
+      {
+        name: "components",
+        type: "folder" as const,
+        children: [],
+      },
+      {
+        name: "hooks",
+        type: "folder" as const,
+        children: [],
+      },
+      {
+        name: "lib",
+        type: "folder" as const,
+        children: [],
+      },
+    ],
+  },
+  
+  {
+    name: ".eslintrc.json",
+    type: "file" as const,
+  },
+  {
+    name: ".gitignore",
+    type: "file" as const,
+  },
+  {
+    name: "components.json",
+    type: "file" as const,
+  },
+  {
+    name: "next.config.js",
+    type: "file" as const,
+  },
+  {
+    name: "package-lock.json",
+    type: "file" as const,
+  },
+  {
+    name: "package.json",
+    type: "file" as const,
+  },
+  {
+    name: "postcss.config.js",
+    type: "file" as const,
+  },
+];
