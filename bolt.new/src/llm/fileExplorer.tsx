@@ -22,6 +22,7 @@ interface FileTreeItemProps {
 
 const FileTreeItem: React.FC<FileTreeItemProps> = ({ node, level = 0 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  //True or false
   const hasChildren = node.type === "folder" && node.children?.length;
 
   return (

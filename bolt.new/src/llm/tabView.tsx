@@ -1,8 +1,9 @@
+"use client"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CodeEditor } from "./code-editor";
 import { PreviewFrame } from "./previewFrame";
 import { useRecoilValue } from "recoil";
-import { selectedFileState } from "@/state/atom";
+import { devEnvironment, selectedFileState } from "@/state/atom";
 export async function TabViewer() {
   const devEnv = useRecoilValue(devEnvironment);
   return (
@@ -15,7 +16,7 @@ export async function TabViewer() {
         {/* You can pass any component here */}
         <CodeEditor />
       </TabsContent>
-      {devEnv && (
+      {typeof devEnv !== 'undefined' && devEnv && (
         <TabsContent value="preview">
           <PreviewFrame />
         </TabsContent>

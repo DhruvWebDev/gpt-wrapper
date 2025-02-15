@@ -1,4 +1,7 @@
+"use client"
 import { useWebContainer } from "@/hooks/useWebContainer";
+import { websiteUrlState } from "@/state/atom";
+import { useRecoilValue } from "recoil";
 
 
 export async function PreviewFrame() {

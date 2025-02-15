@@ -1,75 +1,88 @@
 
+export async function PROMPT({ prompt }: { prompt: string }) {
+  const userPrompt = `
+You are a highly skilled full-stack developer. Your task is to provide implementation details based on the following prompt. 
 
-export async function PROMPT({prompt}){
-const PROMPT = `
-HEY YOU ARE A HIGHLY SKILLED CODER, WHO IS MASTER AT BUILDING STUFF THAT USES NODEJS(REACT, NEXTJS, VITE FRAMERWORK)
-TASK IS TO BUILD A COOL  NEXTJS APP AS PER YOUR PREFERENCE FOR THSI TOPIC --> ${prompt}
+Please return only a JSON object with the required structure, without any additional text or explanation.
 
+Prompt: ${prompt}
+  IMPORTANT --> THE FILE KEY VAL SHOULD HAVE THE ENTIRE FILE SYSTEM NECESSARY TO BUILD AN NEXTJS FILE
+  
+Expected Response Format:
+{
+  "directories": ["src/app/components/ui", "src/app/lib"],
+  "files":       // List of files with their content
+  //Should be likes specified below
+  {
+    name: "app",
+    type: "folder" as const,
+    children: [
+      {
+        name: "api",
+        type: "folder" as const,
+        children: [
+          {
+            name: "code",
+            type: "folder" as const,
+            children: [
+              {
+                name: "route.ts",
+                type: "file" as const,
+                code: "",
+                lang: "typescript"
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: "globals.css",
+        type: "file" as const,
+        code: "",
+        lang: "css"
+      },
+      {
+        name: "page.tsx",
+        type: "file" as const,
+        code: "",
+        lang: "typescript"
+      },
+      {
+        name: "components",
+        type: "folder" as const,
+        children: [],
+      },
+    ],
+  },
+  
+  {
+    name: ".eslintrc.json",
+    type: "file" as const,
+    code: "",
+    lang: "json"
+  },
+  {
+    name: ".gitignore",
+    type: "file" as const,
+    code: "",
+    lang: "plaintext"
+  },
+  "scripts": [     // Only installation and dev commands
+    ["npm install"],
+    ["npm run dev"]
+  ],
+  "description": "A detailed string explaining what the implementation does and how it works",
+  "steps": [
+    {
+      "order": 1,
+      "path": "app/layout.tsx"
+    }
+  ]
 
-STEPS FOR INSTALLING SHADCN/UI ARE:
-
-npx shadcn@latest init -d
-
-//You can now start adding components to your project
-npx shadcn@latest add button
-
-and you can  use them like this 
-
-import { Button } from "@/components/ui/button"
- 
-export default function Home() {
-  return (
-    <div>
-      <Button>Click me</Button>
-    </div>
-  )
 }
-IMPORTANT  --> AND PREFER TO USE SHADCN AND TAILWIND CSS FOR STYLING 
-IMPORTANT --> IF THE USER ASK TO  USE ACERNITY UI 
-
-
-I AM BUILDING A APP THAT WRITES AND PREVIEWS THE CODE USING (WEB CONTAINER TECHNOLOGY),
-
-IMP -> DONT RETURN ANY UNECESSARY WORD, OTHER THAN THE JSON OBJECT
-
-FORMAT OF THE JSON OBJECT SHOULD LOOK LIKE THIS:
-"{"DIRECTORIES":[], "FILES":[], "SCRIPTS":[]}"
-
-IN THE WEB CONTAINER, FOR MOUNTING THE CODE WE NEED TO DO AS FOLOWS:
-
-//FOR CREATING DIRECTORY
-await webcontainerInstance.fs.mkdir('this/is/my/nested/folder', { recursive: true });
-
-//FOR WRITING CODE IN THE FILE
-await webcontainerInstance.fs.writeFile(path, code);
-
-//Warning:
-Before you mount, make sure that the folder you are mounting to exists. If it doesn't, WebContainers will throw an error.
-You can create a folder using mkdir method:
-
-
-SO IN THE DIRECTORIES INNCLUDE THE DATA e.g. src/components , src/lib , src/app
-SO IN THE FILE KEY VAL INCLUDE THE DATA e.g. {"path":"src/app/layout", "code":"<sdfgh>", "fileName":"layout.ts", lang:"typescript"}
-
-IN THE WEB CONTAINERS, THE WAY WE NEED TO RUN THE PROCESS IS LIKE GIVEN AS BELOW AND ENSURE THAT IN THE SCRIPT KEY VALUE PAIR YOU RETURN IN THAT FORMAT:
-In WebContainers, processes are executed as follows:
-//e.g.
-webcontainerInstance.spawn('npm', ['install']);
-The method spawn takes three arguments:
-a string reresenting the command,
-an array with the command options,
-
-SO ENSURE THAT ANY DEPENDENDENCY OR FOR CRETING PRISMA CLIENT or INSTALLING SHADCN/UI so  ENSURE THAT YOU ADD THOSE IN THE DEV SCRIPT ONLY
-
-Also provide us with a key val pair for description along with that one for script and one for steps
-
 `
-
-    return prompt;
+  return userPrompt;
 }
-
-
-
 export const aceternityUIComponents = {
   // Hero and Landing Sections
   hero: {
@@ -232,7 +245,7 @@ export const shadcnComponents = {
   dataDisplay: {
     table: "npx shadcn-ui@latest add table",
     calendar: "npx shadcn-ui@latest add calendar",
-    hover card: "npx shadcn-ui@latest add hover-card",
+    hoverCard: "npx shadcn-ui@latest add hover-card",
     badge: "npx shadcn-ui@latest add badge",
     carousel: "npx shadcn-ui@latest add carousel",
   },
@@ -303,7 +316,6 @@ export const shadcnComponents = {
   }
 };
 
-
 const fileTreeData = [
   {
     name: "app",
@@ -320,6 +332,8 @@ const fileTreeData = [
               {
                 name: "route.ts",
                 type: "file" as const,
+                code: "",
+                lang: "typescript"
               },
             ],
           },
@@ -328,14 +342,20 @@ const fileTreeData = [
       {
         name: "globals.css",
         type: "file" as const,
+        code: "",
+        lang: "css"
       },
       {
         name: "layout.tsx",
         type: "file" as const,
+        code: "",
+        lang: "typescript"
       },
       {
         name: "page.tsx",
         type: "file" as const,
+        code: "",
+        lang: "typescript"
       },
       {
         name: "components",
@@ -354,33 +374,47 @@ const fileTreeData = [
       },
     ],
   },
-  
+
   {
     name: ".eslintrc.json",
     type: "file" as const,
+    code: "",
+    lang: "json"
   },
   {
     name: ".gitignore",
     type: "file" as const,
+    code: "",
+    lang: "plaintext"
   },
   {
     name: "components.json",
     type: "file" as const,
+    code: "",
+    lang: "json"
   },
   {
     name: "next.config.js",
     type: "file" as const,
+    code: "",
+    lang: "javascript"
   },
   {
     name: "package-lock.json",
     type: "file" as const,
+    code: "",
+    lang: "json"
   },
   {
     name: "package.json",
     type: "file" as const,
+    code: "",
+    lang: "json"
   },
   {
     name: "postcss.config.js",
     type: "file" as const,
+    code: "",
+    lang: "javascript"
   },
 ];

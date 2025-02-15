@@ -1,4 +1,4 @@
-import { atom } from 'recoil';
+import { atom } from "recoil";
 
 export const selectedFileState = atom({
   key: 'selectedFile', // unique ID (with respect to other atoms/selectors)
@@ -7,7 +7,7 @@ export const selectedFileState = atom({
 
 export const websiteUrlState = atom({
   key: 'websiteUrl',
-  default: null,
+  default: "",
 });
 
 export const devEnvironment = atom({

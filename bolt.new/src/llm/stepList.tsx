@@ -23,7 +23,7 @@ interface ProjectProps {
   }
 }
 
-export function StepList({ project }: ProjectProps) {
+export function StepList({ project }) {
   const [steps, setSteps] = useState<Step[]>([])
   const [scripts, setScripts] = useState<Script[]>([])
 

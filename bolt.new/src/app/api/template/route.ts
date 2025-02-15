@@ -1,34 +1,32 @@
-import axios from 'axios';
 import {PROMPT} from "@/llm/prompt"
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getCodeFromLlm } from "@/lib/codeFromLLM";
 
-export async function getCodeFromLlm(prompt){
-
-const options = {
-  method: 'GET',
-  url: 'https://chatgpt-4-01.p.rapidapi.com/ask',
-  params: {
-    question: PROMPT({prompt}),
-  },
-  headers: {
-    'x-rapidapi-key': '3c27a85d92msh0004e2185ea65e2p1236ffjsne9d67133a337',
-    'x-rapidapi-host': 'chatgpt-4-01.p.rapidapi.com'
+export async function GET(req: NextApiRequest) {
+  // Create a URL object from the request URL
+  const url = new URL(req.url!, `http://${req.headers.host}`);
+  
+  // Access the search parameters
+  const prompt = url.searchParams.get('prompt');
+  console.log("prompt in api", prompt);
+  if (!prompt) {
+    return new Response(JSON.stringify({ error: 'Prompt query parameter is required.' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
- };
 
- try {
-	const response = await axios.request(options);
-	console.log(response.data);
- } catch (error) {
-	console.error(error);
- }
-}
-
-export async function GET(){
-  const {prompt} = req.query;
-
- try {
-    const projects  = getCodeFromLlm(prompt)
+  try {
+    const projects = await getCodeFromLlm(prompt); // Use the prompt as needed
+    console.log(projects);
+    return new Response(JSON.stringify(projects), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
-    
+    console.error(error);
+    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } 
-}

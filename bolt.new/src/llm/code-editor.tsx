@@ -1,12 +1,26 @@
-
+"use client"
 import React, { useCallback } from 'react';
 import Editor from '@monaco-editor/react';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { selectedFileState } from '@/state/atom';
+import { atom } from 'recoil';
+import { editor } from 'monaco-editor'; // Import the editor type
+
+// Define the type for the file state
+type FileState = {
+  code: string;
+  lang?: string;
+} | null;
+
+// Define the atom with the correct type
+export const selectedFileStateAtom = atom<FileState>({
+  key: 'selectedFileState',
+  default: null,
+});
 
 export function CodeEditor() {
   // We need to use useRecoilState to both get and set the file state
-  const [file, setFile] = useRecoilState(selectedFileState);  
+  const [file, setFile] = useRecoilState(selectedFileStateAtom);  
   const { code, lang } = file || {};  // Destructure the code and language from the file object
 
   if (!file) {
@@ -17,14 +31,13 @@ export function CodeEditor() {
     );
   }
 
-  // This function will be triggered when the content in Monaco editor changes
-  const handleEditorChange = useCallback((newCode) => {
+  const handleEditorChange = useCallback((value: string | undefined, ev: editor.IModelContentChangedEvent) => {
     setFile(prevFile => ({
-      ...prevFile,
-      code: newCode,  // Update the code content with the new value from Monaco
+      ...(prevFile || { code: '' }), // Fallback to an object with code if prevFile is null
+      code: value || '',  // Update the code content with the new value from Monaco
     }));
   }, [setFile]);
-
+  
   return (
     <Editor
       height="100%"

@@ -1,18 +1,21 @@
-export const mountStructure = ({projects}) => {
+"use client"; // Add this directive at the top of the file
+import { useWebContainer } from "@/hooks/useWebContainer";
+
+export const mountStructure = async ({ projects }) => {
+    const WebContainer = useWebContainer();
     const directoryArray = projects.directories;
 
     //Directory creation
-    for(dir in directoryArray){
-        await webcontainerInstance.fs.mkdir(dir, { recursive: true });
-    }
+    projects.directories.map(async (dir, index) => {
+        await WebContainer?.fs.mkdir(dir, { recursive: true });
+    }); // Log the files array to the console
+    
 
     //File mounting 
-    const fileArray = projects.files;
+    projects.files.map(async (file, index) => {
+        const {path, code} = file;
+        await WebContainer?.fs.writeFile(path, code);
+    }); // Log the files array to the console
 
-    //File Creation
-    for(file in fileArray){
-        const {code, order, path, name, lang} = file;
-        await webcontainerInstance.fs.writeFile(path, code);
-    }
 
 }
