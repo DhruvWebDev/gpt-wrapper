@@ -20,8 +20,15 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Change directory to bolt.new
+        run: cd bolt.new
 
-      - name: Run tests
-        run: npm run build
+      - name: Install dependencies in bolt.new
+        run: |
+          cd bolt.new
+          npm install
+
+      - name: Run tests in bolt.new
+        run: |
+          cd bolt.new
+          npm test
