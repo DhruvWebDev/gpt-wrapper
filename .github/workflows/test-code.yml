@@ -33,5 +33,16 @@ jobs:
           cd bolt.new
           npm install --force
 
+      - name: Set up DATABASE_URL for Prisma
+        run: |
+          echo "DATABASE_URL=${{ steps.create_neon_branch_encode.outputs.db_url }}" >> bolt.new/.env
+
+      - name: Run Prisma Migrations (if needed)
+        run: |
+          cd bolt.new
+          npx prisma migrate deploy
+
       - name: Run tests in bolt.new
-        run: npm test
+        run: |
+          cd bolt.new
+          npm test
