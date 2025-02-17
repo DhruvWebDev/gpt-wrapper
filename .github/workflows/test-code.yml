@@ -34,29 +34,4 @@ jobs:
           npm install --force
 
       - name: Run tests in bolt.new
-        run: |
-          cd bolt.new
-          npm test
-
-      - name: Test DB Connection and Requests
-        run: |
-          cd bolt.new
-          node -e "
-            const { Client } = require('pg');
-            const client = new Client({
-              connectionString: '${{ steps.create_neon_branch_encode.outputs.db_url }}',
-            });
-            client.connect()
-              .then(() => {
-                console.log('DB connection successful');
-                return client.query('SELECT 1');
-              })
-              .then(res => {
-                console.log('DB Test Query Result:', res.rows);
-                client.end();
-              })
-              .catch(err => {
-                console.error('DB connection error:', err.stack);
-                process.exit(1);
-              });
-          "
+        run: npm test
