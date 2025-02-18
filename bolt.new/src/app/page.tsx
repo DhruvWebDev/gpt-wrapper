@@ -1,101 +1,146 @@
-import Image from "next/image";
+'use client'
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import {
+  Link2,
+  Sparkles,
+  Code2,
+  Globe,
+  Smartphone,
+  Database,
+  Layout,
+  Box,
+  Cloud,
+  Blocks,
+  Terminal,
+  Cpu,
+  Palette,
+  FileCode,
+  Server,
+  Layers,
+} from "lucide-react"
+import Link from "next/link"
+import { useState } from "react"
+import { useRouter } from "next/router"
+import { useHotkeys } from 'react-hotkeys-hook';
 
-export default function Home() {
+
+export default function Page() {
+  const [prompt, setPrompt] = useState("")
+  const router = useRouter(); // Initialize router
+
+  // Set up hotkey for Enter key
+  useHotkeys('enter', () => {
+    router.push(`/builder/${prompt}`); // Navigate to /builder
+  });
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
+      {/* Navigation */}
+      <nav className="flex items-center justify-between p-4">
+        <Link href="/" className="text-2xl font-bold">
+          bolt
+        </Link>
+        <Link href="/careers" className="text-sm hover:text-gray-300 transition-colors">
+          We&apos;re hiring*
+        </Link>
+      </nav>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Notification Banner */}
+      <div className="flex items-center justify-center bg-gray-800/50 py-2 px-4">
+        <div className="flex items-center gap-2 rounded-full bg-gray-700/50 px-4 py-1.5 text-sm">
+          <span className="flex h-2 w-2 rounded-full bg-orange-500" />
+          New! Create Native Mobile Apps with Bolt
+        </div>
+      </div>
+
+      {/* Hero Section */}
+      <main className="mx-auto max-w-4xl px-4 pt-24 text-center">
+        <h1 className="text-5xl font-bold tracking-tight sm:text-6xl">What do you want to build?</h1>
+        <p className="mt-6 text-lg text-gray-300">
+          Prompt, run, edit, and deploy full-stack <span className="font-medium">web</span> and{" "}
+          <span className="font-medium">mobile</span> apps.
+        </p>
+
+        {/* Search Input */}
+        <div className="mt-12">
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="How can Bolt help you today?"
+              className="h-[72px] bg-gray-800/50 border-gray-700 text-lg pl-6 pr-24"
+              onChange={(e) => setPrompt(e.target.value)} // Update state on input change
+              value={prompt}
+              />
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+              <Button variant="ghost" size="icon">
+                <Link2 className="h-5 w-5" />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Sparkles className="h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="mt-8 flex flex-wrap justify-center gap-2">
+          <Button variant="outline" className="bg-blue-500/10 border-blue-500/20 hover:bg-blue-500/20">
+            <span className="text-blue-400 mr-2">NEW</span> Build a mobile app with Expo
+          </Button>
+          <Button variant="outline" className="bg-gray-800/50 border-gray-700 hover:bg-gray-700/50">
+            Start a blog with Astro
+          </Button>
+          <Button variant="outline" className="bg-gray-800/50 border-gray-700 hover:bg-gray-700/50">
+            Create a docs site with Vitepress
+          </Button>
+        </div>
+
+        {/* Secondary Actions */}
+        <div className="mt-2 flex flex-wrap justify-center gap-2">
+          <Button variant="outline" className="bg-gray-800/50 border-gray-700 hover:bg-gray-700/50">
+            Scaffold UI with shadcn
+          </Button>
+          <Button variant="outline" className="bg-gray-800/50 border-gray-700 hover:bg-gray-700/50">
+            Draft a presentation with Slidev
+          </Button>
+          <Button variant="outline" className="bg-gray-800/50 border-gray-700 hover:bg-gray-700/50">
+            Code a video with Remotion
+          </Button>
+        </div>
+
+        {/* Framework Selection */}
+        <p className="mt-12 text-sm text-gray-400">or start a blank app with your favorite stack</p>
+        <div className="mt-6 grid grid-cols-4 gap-4 sm:grid-cols-8 place-items-center">
+          {[
+            { icon: Code2, label: "Code" },
+            { icon: Globe, label: "Web" },
+            { icon: Smartphone, label: "Mobile" },
+            { icon: Database, label: "Database" },
+            { icon: Layout, label: "UI" },
+            { icon: Box, label: "Package" },
+            { icon: Cloud, label: "Cloud" },
+            { icon: Blocks, label: "Components" },
+            { icon: Terminal, label: "CLI" },
+            { icon: Cpu, label: "System" },
+            { icon: Palette, label: "Design" },
+            { icon: FileCode, label: "Editor" },
+            { icon: Server, label: "Backend" },
+            { icon: Layers, label: "Frontend" },
+            { icon: Link2, label: "API" },
+            { icon: Sparkles, label: "AI" },
+          ].map(({ icon: Icon, label }, i) => (
+            <button
+              key={i}
+              className="h-12 w-12 rounded-lg bg-gray-800/50 flex items-center justify-center hover:bg-gray-700/50 transition-colors group"
+              title={label}
+            >
+              <Icon className="h-6 w-6 text-gray-400 group-hover:text-gray-200 transition-colors" />
+            </button>
+          ))}
         </div>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
-  );
+  )
 }
+
+
