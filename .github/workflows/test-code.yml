@@ -11,6 +11,11 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read        # To read repository contents
+      pull-requests: write  # To post comments to the PR
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -46,3 +51,11 @@ jobs:
         run: |
           cd bolt.new
           npm test
+
+      # Post Schema Diff Comment to PR
+      - name: Post Schema Diff Comment to PR
+        uses: neondatabase/schema-diff-action@v1
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          compare_branch: preview/pr-${{ github.event.number }}-${{ github.sha }}  # Compare the PR db branch
+          api_key: ${{ secrets.NEON_API_KEY }}
