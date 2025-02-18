@@ -1,3 +1,4 @@
+'use client'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -19,8 +20,19 @@ import {
   Layers,
 } from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
+import { useRouter } from "next/router"
+import { useHotkeys } from 'react-hotkeys-hook';
+
 
 export default function Page() {
+  const [prompt, setPrompt] = useState("")
+  const router = useRouter(); // Initialize router
+
+  // Set up hotkey for Enter key
+  useHotkeys('enter', () => {
+    router.push(`/builder/${prompt}`); // Navigate to /builder
+  });
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
       {/* Navigation */}
@@ -53,9 +65,12 @@ export default function Page() {
         <div className="mt-12">
           <div className="relative">
             <Input
+              type="text"
               placeholder="How can Bolt help you today?"
               className="h-[72px] bg-gray-800/50 border-gray-700 text-lg pl-6 pr-24"
-            />
+              onChange={(e) => setPrompt(e.target.value)} // Update state on input change
+              value={prompt}
+              />
             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
               <Button variant="ghost" size="icon">
                 <Link2 className="h-5 w-5" />

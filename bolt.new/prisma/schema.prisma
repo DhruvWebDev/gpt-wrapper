@@ -7,3 +7,45 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id           String        @id @unique @default(cuid())
+  email        String        @unique
+  projects     Projects[]    @relation("UserProjects")
+  profile_pic  String?    
+  subscription Subscription? @relation("UserSubscription")
+}
+
+model Projects {
+  id        String    @id @default(cuid())
+  name      String    @default(cuid())
+  user_id   String  
+  user      User      @relation("UserProjects", fields: [user_id], references: [id])
+  prompts   Prompt[]  @relation("ProjectPrompts")
+}
+
+model Prompt {
+  id         String   @id @default(cuid())
+  prompt     String
+  project    Projects @relation("ProjectPrompts", fields: [project_id], references: [id])
+  project_id String
+}
+
+model Subscription {
+  id      String           @id @unique @default(cuid())
+  user_id String?          @unique
+  user    User?            @relation("UserSubscription", fields: [user_id], references: [id])
+  type    SubscriptionType @default(Free)
+  credits_left Credits     @default(10)
+}
+
+enum SubscriptionType {
+  Free
+  Hobby
+  Developer
+}
+enum Credits {
+    10
+    150
+    250
+}
+

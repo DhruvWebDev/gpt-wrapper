@@ -8,7 +8,7 @@ export async function GET(req: NextApiRequest) {
   
   // Access the search parameters
   const prompt = url.searchParams.get('prompt');
-  console.log("prompt in api", prompt);
+
   if (!prompt) {
     return new Response(JSON.stringify({ error: 'Prompt query parameter is required.' }), {
       status: 400,
@@ -30,3 +30,4 @@ export async function GET(req: NextApiRequest) {
       headers: { 'Content-Type': 'application/json' },
     });
   } 
+}

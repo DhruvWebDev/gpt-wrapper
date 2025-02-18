@@ -38,6 +38,7 @@ export default function Builder() {
     const mount = async () => {
       try {
         const mounted = await mountStructure({codeFromLlm}); 
+        //in the return of the mountStructure i will return the true or false
         setMountCode(!!mounted);
       } catch (error) {
         console.error('Error in mounting code:', error);

@@ -17,5 +17,5 @@ export const mountStructure = async ({ projects }) => {
         await WebContainer?.fs.writeFile(path, code);
     }); // Log the files array to the console
 
-
+    
 }
