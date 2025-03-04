@@ -2,7 +2,7 @@
 import React, { useCallback } from 'react';
 import Editor from '@monaco-editor/react';
 import { useRecoilValue, useRecoilState } from 'recoil';
-import { selectedFileState } from '@/state/atom';
+import { selectedFileState } from '@/store/tanstack-store';
 import { atom } from 'recoil';
 import { editor } from 'monaco-editor'; // Import the editor type
 
@@ -20,7 +20,7 @@ export const selectedFileStateAtom = atom<FileState>({
 
 export function CodeEditor() {
   // We need to use useRecoilState to both get and set the file state
-  const [file, setFile] = useRecoilState(selectedFileStateAtom);  
+  // const [file, setFile] = useRecoilState(selectedFileStateAtom);  
   const { code, lang } = file || {};  // Destructure the code and language from the file object
 
   if (!file) {

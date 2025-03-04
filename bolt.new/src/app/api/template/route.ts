@@ -1,14 +1,13 @@
-import {PROMPT} from "@/llm/prompt"
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest } from 'next/server';
 import { getCodeFromLlm } from "@/lib/codeFromLLM";
 
-export async function GET(req: NextApiRequest) {
+export async function GET(req: NextRequest) {
   // Create a URL object from the request URL
-  const url = new URL(req.url!, `http://${req.headers.host}`);
+  const { searchParams } = req.nextUrl;
   
   // Access the search parameters
-  const prompt = url.searchParams.get('prompt');
-
+  const prompt: string | null = searchParams.get('prompt');
+  
   if (!prompt) {
     return new Response(JSON.stringify({ error: 'Prompt query parameter is required.' }), {
       status: 400,
@@ -16,15 +15,19 @@ export async function GET(req: NextApiRequest) {
     });
   }
 
+  const decodedPrompt = decodeURIComponent(prompt);
+
   try {
-    const projects = await getCodeFromLlm(prompt); // Use the prompt as needed
-    console.log(projects);
+    const projects = await getCodeFromLlm(decodedPrompt);
+    console.log("Projects:",projects);
     return new Response(JSON.stringify(projects), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (error) {
+    
+    } catch (error) {
     console.error(error);
+    
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },

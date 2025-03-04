@@ -1,9 +1,9 @@
 "use client"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CodeEditor } from "./code-editor";
-import { PreviewFrame } from "./previewFrame";
+import { CodeEditor } from "../components/code-editor";
+import { PreviewFrame } from "../components/previewFrame";
 import { useRecoilValue } from "recoil";
-import { devEnvironment, selectedFileState } from "@/state/atom";
+import { devEnvironment, selectedFileState } from "@/store/tanstack-store";
 export async function TabViewer() {
   const devEnv = useRecoilValue(devEnvironment);
   return (

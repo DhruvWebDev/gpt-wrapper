@@ -1,105 +1,140 @@
-'use client';
-
-import { useParams } from 'next/navigation'
-import axios from 'axios'
-import { TabViewer } from '@/llm/tabView';
-import { StepList } from '@/llm/stepList';
-import { mountStructure } from '@/llm/fileMount';
+"use client";
+import { useParams } from "next/navigation";
+import axios from "axios";
+import { MountStructure } from "@/components/fileMount";
 import { useEffect, useState } from "react";
-import { startDevEnvironment } from '@/lib/utils';
-import { useRecoilState } from 'recoil';
-import { devEnvironment } from '@/state/atom';
-// import { Terminal } from '@/components/terminal';
+import { store } from "@/store/tanstack-store";
+import { useWebContainer } from "@/hooks/useWebContainer";
+import { StartDevEnvironment } from "@/lib/startDevEnv";
+import { PreviewFrame } from "@/components/previewFrame";
+import { FileTree } from "@/components/fileExplorer";
+import { CodeEditor } from "@/components/code-editor";
 
 export default function Builder() {
-  const params = useParams<{ prompt: string; }>();
-
-  const [codeFromLlm, setCodeFromLlm] = useState({});
+  const [prompt, setPrompt] = useState("");
+  
+  const [codeFromLlm, setCodeFromLlm] = useState<FileTreeNode[]>([]);
   const [mountCode, setMountCode] = useState(false);
-  const [scriptList, setScriptList] = useState(false);
-  const [stepList, setStepList] = useState({});
-  const [startDevEnv, setStartDevEnv] = useRecoilState(devEnvironment);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const { webcontainer, loading } = useWebContainer();
+  const params = useParams<{ prompt: string }>();
 
-  //Fetching Code from llm  
+  useEffect(() => {
+    if (params.prompt) {
+      const decodedPrompt: string = decodeURIComponent(params.prompt);
+      setPrompt(decodedPrompt);
+    }
+  }, [params.prompt]);
+
+  // Fetching Code from LLM
   useEffect(() => {
     const fetchCode = async () => {
+      if (!params.prompt) return;
+
+      setIsLoading(true);
+      setError("");
+
       try {
-        const response = await axios.get(`/api/template?prompt=${params.prompt}`);
-        setCodeFromLlm(response.data);
+        // Ensure the prompt is properly encoded for the URL
+        const encodedPrompt = encodeURIComponent(params.prompt);
+        console.log("Fetching from:", `/api/template?prompt=${encodedPrompt}`);
+
+        const response = await axios.get(`/api/template?prompt=${encodedPrompt}`);
+        console.log("Response:", JSON.parse(response.data));
+        setCodeFromLlm(JSON.parse(response.data));
+        console.log("Code fetched successfully!", codeFromLlm);
       } catch (error) {
-        console.error('Error in fetching code:', error);
+        console.error("Error in fetching code:", error);
+        setError(`Failed to fetch code: ${error instanceof Error ? error.message : String(error)}`);
+      } finally {
+        setIsLoading(false);
       }
     };
-    fetchCode();
-  }, [params]);
 
-  //Mounting Code
+    fetchCode();
+  }, [params.prompt]);
+
+  // Mounting Code
   useEffect(() => {
     const mount = async () => {
+      if (isLoading || loading) return; // Wait until both code is fetched and webcontainer is loaded
+
+      console.log("Attempting to mount code with data:", codeFromLlm);
+
       try {
-        const mounted = await mountStructure({codeFromLlm}); 
-        //in the return of the mountStructure i will return the true or false
-        setMountCode(!!mounted);
+        console.log("Mounting code...");
+        const mounted = MountStructure({ webcontainer, projects: codeFromLlm });
+        if (mounted) {
+          setMountCode(true);
+          console.log("Code mounted successfully");
+        } else {
+          console.log("Mount function returned false");
+          setMountCode(false);
+        }
       } catch (error) {
-        console.error('Error in mounting code:', error);
+        console.error("Error in mounting code:", error);
         setMountCode(false);
       }
     };
-    mount();
-  }, [codeFromLlm]);
 
-  //Start Dev Environment
-  useEffect(() => {
-    const startDev = async () => {
-      if (mountCode) {
-        try {
-          const started = await startDevEnvironment();
-          setStartDevEnv(!!started);
-        } catch (error) {
-          console.error('Error in starting dev environment:', error);
-          setStartDevEnv(false);
-        }
-      }
-    };
-    startDev();
-  }, [mountCode, setStartDevEnv]);
+    if (!loading) { // Run only when webcontainer is loaded
+      mount();
+    }
+  }, [codeFromLlm, isLoading, loading]); // Add 'loading' dependency
+
+  // // Start Dev Environment
+  // useEffect(() => {
+  //   const startDev = async () => {
+  //     if (!mountCode || loading) return; // Wait until both code is mounted and webcontainer is loaded
+
+  //     console.log("Starting dev environment...", webcontainer);
+  //     try {
+  //       const started = StartDevEnvironment({ webcontainer });
+  //       console.log("Started:", started);
+  //       if (started === true) {
+  //         store.setState((state) => {
+  //           state.devEnvironment = true;
+  //         });
+  //         console.log("Dev environment started successfully");
+  //       } else {
+  //         console.log("StartDevEnvironment returned false");
+  //         store.setState((state) => {
+  //           state.devEnvironment = false;
+  //         });
+  //       }
+  //     } catch (error) {
+  //       console.error("Error in starting dev environment:", error);
+  //       store.setState((state) => {
+  //         state.devEnvironment = false;
+  //       });
+  //     }
+  //   };
+
+  //   if (!loading) { // Run only when webcontainer is loaded
+  //     startDev();
+  //   }
+  // }, [mountCode, loading, webcontainer]); // Add 'loading' dependency
 
   return (
-    <div className="flex h-screen bg-background">
-      {/* Left Sidebar */}
-      <div className="w-1/4 border-r border-border p-4 flex flex-col gap-4 overflow-y-auto">
-        <div className="space-y-4">
-          <div className="rounded-lg border border-border p-4">
-            <h2 className="text-lg font-semibold mb-2">Steps</h2>
-            <StepList project={codeFromLlm} />
-          </div>
-          
-          <div className="rounded-lg border border-border p-4">
-            <h2 className="text-lg font-semibold mb-2">Scripts</h2>
-            {/* Add your scripts component here */}
-          </div>
-          
-          <div className="rounded-lg border border-border p-4">
-            <h2 className="text-lg font-semibold mb-2">Description</h2>
-            <p className="text-sm text-muted-foreground">
-              {codeFromLlm?.description || 'No description available'}
-            </p>
-          </div>
-        </div>
-      </div>
+    <div>
+      <h1>{prompt}</h1>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Tab Viewer */}
-        <div className="flex-1 p-4">
-          <TabViewer />
-        </div>
+      {isLoading && <p>Loading code from LLM...</p>}
+      {error && <p className="error">Error: {error}</p>}
 
-        {/* Terminal */}
-        <div className="h-1/4 border-t border-border p-4">
-          {/* <Terminal /> */}
+      {!isLoading && codeFromLlm && codeFromLlm.scripts && (
+        <div>
+          <p>Code loaded successfully!</p>
+          {codeFromLlm ? (
+            <p>Code mounted successfully!</p>
+          ) : (
+            <p>Failed to mount code</p>
+          )}
+          {<FileTree data={codeFromLlm?.files} />}
+          <PreviewFrame webcontainer={webcontainer} />
         </div>
-      </div>
+      )}
     </div>
   );
-} 
+}
