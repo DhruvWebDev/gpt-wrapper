@@ -1,20 +1,36 @@
-import axios from 'axios';
+import { NextRequest } from 'next/server';
+import { getCodeFromLlm } from "@/lib/codeFromLLM";
 
-const options = {
-  method: 'GET',
-  url: 'https://chatgpt-4-01.p.rapidapi.com/ask',
-  params: {
-    question: 'hey give me json object for each and every file that is requird for making a react app, object should include code name path, i only want object no other word or so no quoatation and apostofi'
-  },
-  headers: {
-    'x-rapidapi-key': '3c27a85d92msh0004e2185ea65e2p1236ffjsne9d67133a337',
-    'x-rapidapi-host': 'chatgpt-4-01.p.rapidapi.com'
+export async function GET(req: NextRequest) {
+  // Create a URL object from the request URL
+  const { searchParams } = req.nextUrl;
+  
+  // Access the search parameters
+  const prompt: string | null = searchParams.get('prompt');
+  
+  if (!prompt) {
+    return new Response(JSON.stringify({ error: 'Prompt query parameter is required.' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
-};
 
-try {
-	const response = await axios.request(options);
-	console.log(response.data);
-} catch (error) {
-	console.error(error);
+  const decodedPrompt = decodeURIComponent(prompt);
+
+  try {
+    const projects = await getCodeFromLlm(decodedPrompt);
+    console.log("Projects:",projects);
+    return new Response(JSON.stringify(projects), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+    
+    } catch (error) {
+    console.error(error);
+    
+    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } 
 }
